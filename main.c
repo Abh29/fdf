@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 	if (mlx == NULL)
 		ft_exit("Error : Could not initite a window !\n", 1);
 	window = mlx_new_window(mlx, 512, 512, "fdf...");
-	if (window = NULL)
+	if (window == NULL)
 		ft_exit("Error : Could not create a new window !\n", 1);
 	
 	for (int i = 0; i < map.rows; i++)

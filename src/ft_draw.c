@@ -46,6 +46,7 @@ void	ft_draw_pixel(int x, int y, char *color)
 
 void	ft_draw_3d_pixel(t_point p, char *color, int alpha, int beta)
 {
+	(void) color;
 	ft_rotate_3d(&p, alpha, beta);
 	ft_draw_pixel(p.x, p.y, p.color);
 }

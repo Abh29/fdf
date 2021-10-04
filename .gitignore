@@ -2,3 +2,4 @@ test.c
 sources/*
 sources
 minilibx_macos
+minilibx_linux
