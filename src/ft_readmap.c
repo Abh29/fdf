@@ -1,6 +1,5 @@
 #include "../fdf.h"
 
-
 void	ft_map_size(t_map *map, char *file)
 {
 	char	*line;
@@ -15,8 +14,8 @@ void	ft_map_size(t_map *map, char *file)
 	map->rows = 0;
 	i = 0;
 	line = get_next_line(fd);
-		if (line == NULL)
-			return ;
+	if (line == NULL)
+		return ;
 	map->rows++;
 	spt = ft_split(line, ' ');
 	free(line);
@@ -28,7 +27,7 @@ void	ft_map_size(t_map *map, char *file)
 	{
 		line = get_next_line(fd);
 		if (line == NULL)
-			break;
+			break ;
 		map->rows++;
 		free(line);
 	}

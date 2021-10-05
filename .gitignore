@@ -3,3 +3,7 @@ sources/*
 sources
 minilibx_macos
 minilibx_linux
+*/*.o
+.*
+fdf.dSYM
+tst

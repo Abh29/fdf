@@ -1,21 +1,22 @@
 #first parts 
 SRC :=	main.c  gnl/get_next_line.c gnl/get_next_line_utils.c \
 		src/ft_readmap.c src/ft_tools.c src/ft_print.c src/ft_draw.c \
-		src/ft_pointmap.c
+		src/ft_pointmap.c src/ft_transform.c
 
 #bonnus 
 BSRC :=	$(SRC)
 
 CC = gcc
 
-FLGS = -Wall -Werror -Wextra -g -lm
+FLGS = -Wall -Werror -Wextra  -g -lm
+FRMWK = -Lmlx -lmlx -framework OpenGL -framework AppKit
 VALGFLGS = --vgdb=full --leak-check=full -s -q
 FBSIZE =	-D BUFFER_SIZE=42
 TARGS = test_maps/julia.fdf
 
 HEADER = fdf.h
 LIBFT = libft/libft.a
-MLBX = minilibx_macos/libmlx.a
+MLBX = minilibx/libmlx.dylib
 
 NAME = fdf
 
@@ -24,7 +25,7 @@ all :$(NAME)
 	
 $(NAME): $(SRC) $(HEADER) $(LIBFT)
 	@echo "compiling ..."
-	@$(CC) $(FLGS) $(FBSIZE) $(SRC) $(LIBFT) -o $(NAME)
+	@$(CC) $(FLGS) $(FRMWK) $(FBSIZE) $(SRC) $(LIBFT) -o $(NAME)
 
 bonus: $(BSRC) $(HEADER) $(LIBFT)
 	@echo "compiling bonus ..."
@@ -54,7 +55,7 @@ re: fclean all
 
 test:
 	@make -C libft/
-	@$(CC) $(FBSIZE) $(MLBX) $(BSRC) $(LIBFT)  -o tst -lm
+	@$(CC) $(FRMWK) $(FBSIZE) $(BSRC) $(LIBFT)  -o tst -lm
 
 debug: $(SRC) $(HEADER) $(LIBFT)
 	@make debug -C libft/

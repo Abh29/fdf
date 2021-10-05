@@ -9,82 +9,62 @@ typedef	struct s_draw
 	int y;
 }				t_draw;
 
-typedef struct s_rot
+void	ft_put_pixel(t_mlx *img, int x, int y, int color)
 {
-	double	cosA;
-	double	cosB;
-	double	sinA;
-	double	sinB;
-}				t_rot;
+	char	*dst;
 
-
-
-void	ft_rotate_3d(t_point *p, double alpha, double beta)
-{
-	int x;
-	int y;
-	int z;
-	t_rot R;
-
-	R.cosA = cos(alpha);
-	R.cosB = cos(beta);
-	R.sinA = sin(alpha);
-	R.sinB = sin(beta);
-	x = p->x;
-	y = p->y;
-	z = p->z;
-	p->x = x * R.cosB - z * R.sinB;
-	p->y = x * R.sinA * R.sinB + y * R.cosA + z * R.sinA * R.cosB;
-	p->z = x * R.cosA * R.sinB - y * R.sinA + z * R.cosA * R.cosB;
+	dst = img->addr + (y * img->line_length + x * (img->bpp / 8));
+	*(unsigned int *)dst = color;
 }
 
-
-void	ft_draw_pixel(int x, int y, char *color)
+void	ft_draw_3d_pixel(t_mlx *img, t_point p, int alpha, int beta)
 {
-	printf("%d %d %s\n", x, y, color);
-}
-
-void	ft_draw_3d_pixel(t_point p, char *color, int alpha, int beta)
-{
-	(void) color;
 	ft_rotate_3d(&p, alpha, beta);
-	ft_draw_pixel(p.x, p.y, p.color);
+	ft_put_pixel(img, p.x, p.y, p.color);
 }
 
-void	ft_draw_2d_line(int x0, int y0, int x1, int y1)
+void	ft_draw_2d_line(t_mlx *img, t_point p0, t_point p1)
 {
-	t_draw l;
+	t_draw	l;
 
-	l.dx = x1 - x0;
-	l.dy = y1 - y0;
-	l.x = x0;
-	l.y = y0;
+	l.dx = p1.x - p0.x;
+	l.dy = p1.y - p0.y;
+	l.x = p0.x;
+	l.y = p0.y;
 	l.p = 2 * l.dy - l.dx;
-	while (l.x < x1)
+	while (l.x < p1.x)
 	{
 		if (l.p >= 0)
 		{
-			ft_draw_pixel(l.x, l.y, "color");
+			ft_put_pixel(img, l.x, l.y, 0xffffff);
 			l.y = l.y + 1;
 			l.p = l.p + 2 * l.dy - 2 * l.dx;
 		}
 		else
 		{
-			ft_draw_pixel(l.x, l.y, "color");
+			ft_put_pixel(img, l.x, l.y, 0xffffff);
 			l.p = l.p + 2 * l.dy;
 		}
 		l.x = l.x + 1;
 	}
 }
 
-void	ft_draw_3d_line(t_point p0, t_point p1, double alpha, double beta)
+void	ft_draw_grid(t_mlx *img, t_point ***grid, int rows, int cols)
 {
-	printf("drawing ...");
-	ft_rotate_3d(&p0, alpha, beta);
-	ft_rotate_3d(&p1, alpha, beta);
-	printf(" %d %d , %d %d \n", p0.x, p0.y, p1.x, p1.y);
-	ft_draw_2d_line(p0.x, p0.y, p1.x, p1.y);
-	printf("end drawing .\n");
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < rows - 1)
+	{
+		j = 0;
+		while (j < cols - 1)
+		{
+			ft_draw_2d_line(img, *grid[i][j], *grid[i + 1][j]);
+			ft_draw_2d_line(img, *grid[i][j], *grid[i][j + 1]);
+			printf("drawing (%d, %d)--(%d, %d)\n", grid[i][j]->x, grid[i][j]->y, grid[i][j + 1]->x, grid[i][j + 1]->y);
+			j++;
+		}
+		i++;
+	}
 }
-
-
