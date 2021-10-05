@@ -4,6 +4,7 @@ typedef	struct s_draw
 {
 	int dx;
 	int	dy;
+	int xi;
 	int	p;
 	int x;
 	int y;
@@ -23,29 +24,72 @@ void	ft_draw_3d_pixel(t_mlx *img, t_point p, int alpha, int beta)
 	ft_put_pixel(img, p.x, p.y, p.color);
 }
 
-void	ft_draw_2d_line(t_mlx *img, t_point p0, t_point p1)
+void	ft_plotLine(t_mlx *img, t_point p0, t_point p1)
 {
 	t_draw	l;
 
 	l.dx = p1.x - p0.x;
 	l.dy = p1.y - p0.y;
+	l.xi = 1;
+	if (l.dx < 0)
+	{
+		l.xi = -1;
+		l.dx *= -1;
+	}
+	l.p = 2 * l.dx - l.dy;
 	l.x = p0.x;
 	l.y = p0.y;
-	l.p = 2 * l.dy - l.dx;
-	while (l.x < p1.x)
+	while (l.y < p1.y)
 	{
-		if (l.p >= 0)
+		ft_put_pixel(img, l.x, l.y, 0xffffff);
+		if (l.p > 0)
 		{
-			ft_put_pixel(img, l.x, l.y, 0xffffff);
-			l.y = l.y + 1;
-			l.p = l.p + 2 * l.dy - 2 * l.dx;
+			l.x = l.x + l.xi;
+			l.p = l.p + 2 * (l.dx - l.dy);
 		}
 		else
-		{
-			ft_put_pixel(img, l.x, l.y, 0xffffff);
-			l.p = l.p + 2 * l.dy;
-		}
-		l.x = l.x + 1;
+			l.p = l.p + 2 * l.dx;
+		l.y = l.y + 1;
+	}
+}
+
+void	ft_plotHLine(t_mlx *img, t_point p0, t_point p1)
+{
+	int	x0;
+	int	x1;
+
+	x0 = p0.x;
+	x1 = p1.x;
+	if (x0 > x1)
+	{
+		x0 += x1;
+		x1 = x0 - x1;
+		x0 = x0 - x1;
+	}
+	while (x0 <= x1)
+	{
+		ft_put_pixel(img, x0, p0.y, 0xffffff);
+		x0++;
+	}
+}
+
+void	ft_draw_2d_line(t_mlx *img, t_point p0, t_point p1)
+{
+	if (p1.y == p0.y)
+		ft_plotHLine(img, p0, p1);
+	else if (abs(p1.y - p0.y) < abs(p1.x - p0.x))
+	{
+		if (p0.x > p1.x)
+			ft_plotLine(img, p1, p0);
+		else
+			ft_plotLine(img, p0, p1);
+	}
+	else
+	{
+		if (p0.y > p1.y)
+			ft_plotLine(img, p1, p0);
+		else
+			ft_plotLine(img, p0, p1);
 	}
 }
 

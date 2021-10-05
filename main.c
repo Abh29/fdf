@@ -17,9 +17,9 @@ void	ft_init_data(t_transform *tsf)
 {
 	tsf->alpha = 35.264;
 	tsf->beta = 45;
-	tsf->scaleX = 10;
-	tsf->scaleY = 10;
-	tsf->scaleZ = 10;
+	tsf->scaleX = 30;
+	tsf->scaleY = 30;
+	tsf->scaleZ = 30;
 }
 
 int	main(int argc, char **argv)
@@ -28,7 +28,10 @@ int	main(int argc, char **argv)
 	t_point		***points;
 	t_transform	tsf;
 	t_mlx		mlx;
+	t_point a,b;
 
+	a.x = 100; a.y = 10; a.z = 10;
+	b.x = 200; b.y = 11; b.z = 10;
 	ft_init_window(&mlx, 512, 512, "fdf...");
 	ft_init_data(&tsf);
 	if (argc < 2)
@@ -37,11 +40,9 @@ int	main(int argc, char **argv)
 	points = ft_pointsmap(&map);
 	ft_scale_grid(&map, &tsf, &points);
 	ft_print_grid(points, map.rows, map.cols);
-	//ft_draw_grid(&mlx, points, map.rows, map.cols);
 	//ft_transform(&map, &tsf, &points);
-	//printf("this is printing the points  : \n");
-	//ft_print_pointsmap(&map, &points);
 	ft_draw_grid(&mlx, points, map.rows, map.cols);
+	//ft_draw_2d_line(&mlx, a, b);
 	ft_free_grid(&map, &points);
 	mlx_put_image_to_window(mlx.mlx, mlx.window, mlx.img, 0, 0);
 	mlx_loop(mlx.mlx);
