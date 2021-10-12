@@ -35,14 +35,20 @@ void	ft_map_size(t_map *map, char *file)
 	return ;
 }
 
-void	ft_parce_ints(char	**ints, int *arr)
+void	ft_parce_ints(char	**ints, int *arr, int *colors)
 {
-	int i;
+	int 	i;
+	char	*s;
 
 	i = 0;
 	while (ints[i])
 	{
 		arr[i] = ft_atoi(ints[i]);
+		s = ft_strchr(ints[i], ',');
+		if (s)
+			colors[i] = ft_atoi_base(s + 1, "0123456789ABCDEF");
+		else
+			colors[i] = 0xffffff;
 		free(ints[i]);
 		i++;
 	}
@@ -60,7 +66,8 @@ void	ft_readmap(t_map *map, char *file)
 	if (fd < 0)
 		ft_exit("Error : Unable to read file !\n", 1);
 	map->alts = malloc((map->rows + 1) * sizeof(int*));
-	if (map->alts == NULL)
+	map->colors = malloc((map->rows + 1) * sizeof(int *));
+	if (map->alts == NULL || map->colors == NULL)
 		ft_exit("Error : Unable to allocate memory for the map !\n", 1);
 	i = 0;
 	while (1)
@@ -69,10 +76,11 @@ void	ft_readmap(t_map *map, char *file)
 		if (line == NULL || *line == '\n')
 			break;
 		map->alts[i] = malloc((map->cols + 1) * sizeof(int));
-		if (map->alts == NULL)
+		map->colors[i] = malloc((map->cols + 1) * sizeof(int));
+		if (map->alts[i] == NULL || map->colors[i] == NULL)
 			ft_exit("Error : Unable to allocate memory for the map!\n",1);
 		zs = ft_split(line, ' ');
-		ft_parce_ints(zs, map->alts[i]);
+		ft_parce_ints(zs, map->alts[i], map->colors[i]);
 		free(line);
 		free(zs);
 		i++;

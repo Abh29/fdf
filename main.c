@@ -1,25 +1,29 @@
 #include "fdf.h"
 
-void	ft_init_window(t_mlx *mlx, int width, int height, char *title)
+int	ft_hook(int key, t_param *param)
 {
-	mlx->mlx = mlx_init();
-	if (mlx->mlx == NULL)
-		ft_exit("Error : Could not initite a window !\n", 1);
-	mlx->img = mlx_new_image(mlx->mlx, width, height);
-	mlx->addr = mlx_get_data_addr(mlx->img, &(mlx->bpp), \
-	&(mlx->line_length), &(mlx->endian));
-	mlx->window = mlx_new_window(mlx->mlx, width, height, title);
-	if (mlx->addr == NULL)
-		ft_exit("Error : Could not create a new window !\n", 1);
-}
+	t_point		***points;
 
-void	ft_init_data(t_transform *tsf)
-{
-	tsf->alpha = 35.264;
-	tsf->beta = 45;
-	tsf->scaleX = 30;
-	tsf->scaleY = 30;
-	tsf->scaleZ = 30;
+	printf("key clicked %d\n alpha %f  beta %f  gama %f\n", key, param->tsf->alpha, param->tsf->beta, param->tsf->gama);
+	printf("width %d, height %d\n", param->tsf->width, param->tsf->height);
+	printf("scaleX %d, scaleY %d\n", param->tsf->scaleX, param->tsf->scaleY);
+	if (ft_change_rotation(key, param->tsf) ||
+		ft_change_scale(key, param->tsf) ||
+		ft_change_translate(key, param) ||
+		ft_set_predef_transform(key, param->tsf, param->map))
+	{
+		points = ft_pointsmap(param->map);
+		ft_scale_grid(param->map, param->tsf, &points);
+		ft_transform(param->map, param->tsf, &points);
+		mlx_destroy_image(param->mlx->mlx, param->mlx->img);
+		param->mlx->img = mlx_new_image(param->mlx->mlx, param->tsf->width + 512, param->tsf->height + 512);
+		param->mlx->addr = mlx_get_data_addr(param->mlx->img, &(param->mlx->bpp), \
+		&(param->mlx->line_length), &(param->mlx->endian));
+		ft_draw_grid(param->mlx, points, param->map->rows, param->map->cols);
+		mlx_put_image_to_window(param->mlx->mlx, param->mlx->window, param->mlx->img, param->originX, param->originY);
+		ft_free_grid(param->map, &points);
+	}
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -28,23 +32,28 @@ int	main(int argc, char **argv)
 	t_point		***points;
 	t_transform	tsf;
 	t_mlx		mlx;
-	t_point a,b;
+	t_param		param;
 
-	a.x = 100; a.y = 10; a.z = 10;
-	b.x = 200; b.y = 11; b.z = 10;
-	ft_init_window(&mlx, 512, 512, "fdf...");
-	ft_init_data(&tsf);
+	param.map = &map;
+	param.tsf = &tsf;
+	param.mlx = &mlx;
+	param.originX = 0;
+	param.originY = 0;
 	if (argc < 2)
 		ft_exit("Error : more arguments are expected !\n", 1);
 	ft_readmap(&map, argv[1]);
+	ft_printmap(&map);
+	ft_init_data(&map, &tsf);
 	points = ft_pointsmap(&map);
+	param.points = points;
+	ft_init_window(&mlx, &tsf, "fdf...");
+	mlx_hook(mlx.window, 2, 1L<<0, ft_close, &param);
 	ft_scale_grid(&map, &tsf, &points);
-	ft_print_grid(points, map.rows, map.cols);
-	//ft_transform(&map, &tsf, &points);
+	ft_transform(&map, &tsf, &points);
 	ft_draw_grid(&mlx, points, map.rows, map.cols);
-	//ft_draw_2d_line(&mlx, a, b);
 	ft_free_grid(&map, &points);
 	mlx_put_image_to_window(mlx.mlx, mlx.window, mlx.img, 0, 0);
+	mlx_key_hook(mlx.window, &ft_hook, &param);
 	mlx_loop(mlx.mlx);
 	return (0);
 }

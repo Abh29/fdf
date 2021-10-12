@@ -18,15 +18,10 @@ void	ft_put_pixel(t_mlx *img, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void	ft_draw_3d_pixel(t_mlx *img, t_point p, int alpha, int beta)
-{
-	ft_rotate_3d(&p, alpha, beta);
-	ft_put_pixel(img, p.x, p.y, p.color);
-}
-
-void	ft_plotLine(t_mlx *img, t_point p0, t_point p1)
+void	ft_plotYLine(t_mlx *img, t_point p0, t_point p1)
 {
 	t_draw	l;
+	int		color;
 
 	l.dx = p1.x - p0.x;
 	l.dy = p1.y - p0.y;
@@ -41,7 +36,11 @@ void	ft_plotLine(t_mlx *img, t_point p0, t_point p1)
 	l.y = p0.y;
 	while (l.y < p1.y)
 	{
-		ft_put_pixel(img, l.x, l.y, 0xffffff);
+		if (l.y < p1.y / 2)
+			color = p0.color;
+		else
+			color = p1.color;
+		ft_put_pixel(img, l.x, l.y, color);
 		if (l.p > 0)
 		{
 			l.x = l.x + l.xi;
@@ -50,6 +49,36 @@ void	ft_plotLine(t_mlx *img, t_point p0, t_point p1)
 		else
 			l.p = l.p + 2 * l.dx;
 		l.y = l.y + 1;
+	}
+}
+
+void	ft_plotXLine(t_mlx *img, t_point p0, t_point p1)
+{
+	t_draw	l;
+	int		color;
+
+	l.dx = p1.x - p0.x;
+	l.dy = p1.y - p0.y;
+	l.x = p0.x;
+	l.y = p0.y;
+	l.p = 2 * l.dy - l.dx;
+	while (l.x < p1.x)
+	{
+		if (l.x < p1.x / 2)
+			color = p0.color;
+		else
+			color = p1.color;
+		ft_put_pixel(img, l.x, l.y, color);
+		if (l.p >= 0)
+		{
+			l.y = l.y + 1;
+			l.p = l.p + 2 * l.dy - 2 * l.dx;
+		}
+		else
+		{
+			l.p = l.p + 2 * l.dy;
+		}
+		l.x = l.x + 1;
 	}
 }
 
@@ -75,21 +104,19 @@ void	ft_plotHLine(t_mlx *img, t_point p0, t_point p1)
 
 void	ft_draw_2d_line(t_mlx *img, t_point p0, t_point p1)
 {
-	if (p1.y == p0.y)
-		ft_plotHLine(img, p0, p1);
-	else if (abs(p1.y - p0.y) < abs(p1.x - p0.x))
+	if (abs(p1.y - p0.y) < abs(p1.x - p0.x))
 	{
 		if (p0.x > p1.x)
-			ft_plotLine(img, p1, p0);
+			ft_plotXLine(img, p1, p0);
 		else
-			ft_plotLine(img, p0, p1);
+			ft_plotXLine(img, p0, p1);
 	}
 	else
 	{
 		if (p0.y > p1.y)
-			ft_plotLine(img, p1, p0);
+			ft_plotYLine(img, p1, p0);
 		else
-			ft_plotLine(img, p0, p1);
+			ft_plotYLine(img, p0, p1);
 	}
 }
 
@@ -99,14 +126,16 @@ void	ft_draw_grid(t_mlx *img, t_point ***grid, int rows, int cols)
 	int	j;
 
 	i = 0;
-	while (i < rows - 1)
+	while (i < rows)
 	{
 		j = 0;
-		while (j < cols - 1)
+		while (j < cols)
 		{
-			ft_draw_2d_line(img, *grid[i][j], *grid[i + 1][j]);
-			ft_draw_2d_line(img, *grid[i][j], *grid[i][j + 1]);
-			printf("drawing (%d, %d)--(%d, %d)\n", grid[i][j]->x, grid[i][j]->y, grid[i][j + 1]->x, grid[i][j + 1]->y);
+			if (i < rows - 1)
+				ft_draw_2d_line(img, *grid[i][j], *grid[i + 1][j]);
+			if (j < cols - 1)
+				ft_draw_2d_line(img, *grid[i][j], *grid[i][j + 1]);
+			//printf("drawing (%d, %d)--(%d, %d)\n", grid[i][j]->x, grid[i][j]->y, grid[i][j + 1]->x, grid[i][j + 1]->y);
 			j++;
 		}
 		i++;

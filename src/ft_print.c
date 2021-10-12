@@ -10,7 +10,7 @@ void	ft_printmap(t_map *map)
 	{
 		j = 0;
 		while (j < map->cols)
-			printf("%d   ", map->alts[i][j++]);
+			printf("%d   ", map->colors[i][j++]);
 		printf("\n");
 		i++;
 	}

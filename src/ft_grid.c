@@ -25,6 +25,7 @@ t_point	***ft_pointsmap(t_map *map)
 			p->x = i;
 			p->y = j;
 			p->z = map->alts[i][j];
+			p->color = map->colors[i][j];
 			out[i][j] = p;
 			j++;
 		}
@@ -40,6 +41,8 @@ void	ft_translate(t_map * map, t_transform *tsf, t_point ****pos)
 	int		j;
 
 	i = 0;
+	tsf->height = map->rows;
+	tsf->width = map->cols;
 	while (i < map->rows)
 	{
 		j = 0;
@@ -48,6 +51,10 @@ void	ft_translate(t_map * map, t_transform *tsf, t_point ****pos)
 			p = pos[0][i][j];
 			p->x += tsf->trsltX * -1;
 			p->y += tsf->trsltY * -1;
+			if (tsf->height < p->x)
+				tsf->height = p->x;
+			if (tsf->width < p->y)
+				tsf->width = p->y;
 			j++;
 		}
 		i++;
@@ -72,7 +79,7 @@ void	ft_transform(t_map *map, t_transform *tsf, t_point ****pos)
 			p->x = i * tsf->scaleX;
 			p->y = j * tsf->scaleY;
 			p->z = map->alts[i][j] * tsf->scaleZ;
-			ft_rotate_3d(p, tsf->alpha, tsf->beta);
+			ft_rotate_3d(p, tsf);
 			if (tsf->trsltX > p->x)
 				tsf->trsltX = p->x;
 			if (tsf->trsltY > p->y)
@@ -82,47 +89,4 @@ void	ft_transform(t_map *map, t_transform *tsf, t_point ****pos)
 		i++;
 	}
 	ft_translate(map, tsf, pos);
-}
-
-void	ft_scale_grid(t_map *map, t_transform *tsf, t_point ****pos)
-{
-	t_point	*p;
-	int		i;
-	int		j;
-
-	i = 0;
-	while (i < map->rows)
-	{
-		j = 0;
-		while (j < map->cols)
-		{
-			p = pos[0][i][j];
-			p->x = i * tsf->scaleX;
-			p->y = j * tsf->scaleY;
-			p->z = map->alts[i][j] * tsf->scaleZ;
-			j++;
-		}
-		i++;
-	}
-}
-
-void	ft_free_grid(t_map *map, t_point ****points)
-{
-	int i;
-	int j;
-
-	i = 0;
-	while (i < map->rows)
-	{
-		j = 0;
-		while (j < map->cols)
-		{
-			free(points[0][i][j]);
-			j++;
-		}
-		free(points[0][i]);
-		i++;
-	}
-	free(*points);
-	*points = NULL;
 }

@@ -1,19 +1,18 @@
 #first parts 
 SRC :=	main.c  gnl/get_next_line.c gnl/get_next_line_utils.c \
 		src/ft_readmap.c src/ft_tools.c src/ft_print.c src/ft_draw.c \
-		src/ft_grid.c src/ft_transform.c src/ft_tools_2.c src/ft_control.c \
-		src/ft_grid_2.c
+		src/ft_pointmap.c src/ft_transform.c
 
 #bonnus 
 BSRC :=	$(SRC)
 
 CC = gcc
 
-FLGS = -Wall -Werror -Wextra -Imlx  -g -lm
-FRMWK = -Lmlx_linux -lmlx_linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
+FLGS = -Wall -Werror -Wextra  -g -lm
+FRMWK = -Lmlx -lmlx -framework OpenGL -framework AppKit
 VALGFLGS = --vgdb=full --leak-check=full -s -q
 FBSIZE =	-D BUFFER_SIZE=42
-TARGS = test_maps/42.fdf
+TARGS = test_maps/julia.fdf
 
 HEADER = fdf.h
 LIBFT = libft/libft.a
@@ -26,7 +25,7 @@ all :$(NAME)
 	
 $(NAME): $(SRC) $(HEADER) $(LIBFT)
 	@echo "compiling ..."
-	@$(CC) $(FLGS)  $(FBSIZE) $(SRC) $(LIBFT) -o $(NAME) -lm $(FRMWK)
+	@$(CC) $(FLGS) $(FRMWK) $(FBSIZE) $(SRC) $(LIBFT) -o $(NAME)
 
 bonus: $(BSRC) $(HEADER) $(LIBFT)
 	@echo "compiling bonus ..."
@@ -63,7 +62,7 @@ debug: $(SRC) $(HEADER) $(LIBFT)
 	@echo "compiling with -g ..."
 	@$(CC) -g $(FBSIZE) $(SRC) $(LIBFT) -o $(NAME) -lm
 
-valgrind: $(NAME)
+valgrind: debug
 	@valgrind $(VALGFLGS) ./$(NAME) $(TARGS)
 
 
