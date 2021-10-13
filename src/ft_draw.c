@@ -1,21 +1,40 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_draw.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mehill <mehill@student.21-school.ru>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/13 20:00:08 by mehill            #+#    #+#             */
+/*   Updated: 2021/10/13 20:20:00 by mehill           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../fdf.h"
 
-typedef	struct s_draw
+typedef struct s_draw
 {
-	int dx;
+	int	dx;
 	int	dy;
-	int xi;
+	int	xi;
 	int	p;
-	int x;
-	int y;
+	int	x;
+	int	y;
 }				t_draw;
 
-void	ft_put_pixel(t_mlx *img, int x, int y, int color)
+static void	ft_helper1(t_draw *l, t_point p0, t_point p1)
 {
-	char	*dst;
-
-	dst = img->addr + (y * img->line_length + x * (img->bpp / 8));
-	*(unsigned int *)dst = color;
+	l->dx = p1.x - p0.x;
+	l->dy = p1.y - p0.y;
+	l->xi = 1;
+	if (l->dx < 0)
+	{
+		l->xi = -1;
+		l->dx *= -1;
+	}
+	l->p = 2 * l->dx - l->dy;
+	l->x = p0.x;
+	l->y = p0.y;
 }
 
 void	ft_plotYLine(t_mlx *img, t_point p0, t_point p1)
@@ -23,17 +42,7 @@ void	ft_plotYLine(t_mlx *img, t_point p0, t_point p1)
 	t_draw	l;
 	int		color;
 
-	l.dx = p1.x - p0.x;
-	l.dy = p1.y - p0.y;
-	l.xi = 1;
-	if (l.dx < 0)
-	{
-		l.xi = -1;
-		l.dx *= -1;
-	}
-	l.p = 2 * l.dx - l.dy;
-	l.x = p0.x;
-	l.y = p0.y;
+	ft_helper1(&l, p0, p1);
 	while (l.y < p1.y)
 	{
 		if (l.y < p1.y / 2)
@@ -52,16 +61,21 @@ void	ft_plotYLine(t_mlx *img, t_point p0, t_point p1)
 	}
 }
 
+static void	ft_helper2(t_draw *l, t_point p0, t_point p1)
+{
+	l->dx = p1.x - p0.x;
+	l->dy = p1.y - p0.y;
+	l->x = p0.x;
+	l->y = p0.y;
+	l->p = 2 * l->dy - l->dx;
+}
+
 void	ft_plotXLine(t_mlx *img, t_point p0, t_point p1)
 {
 	t_draw	l;
 	int		color;
 
-	l.dx = p1.x - p0.x;
-	l.dy = p1.y - p0.y;
-	l.x = p0.x;
-	l.y = p0.y;
-	l.p = 2 * l.dy - l.dx;
+	ft_helper2(&l, p0, p1);
 	while (l.x < p1.x)
 	{
 		if (l.x < p1.x / 2)
@@ -99,45 +113,5 @@ void	ft_plotHLine(t_mlx *img, t_point p0, t_point p1)
 	{
 		ft_put_pixel(img, x0, p0.y, 0xffffff);
 		x0++;
-	}
-}
-
-void	ft_draw_2d_line(t_mlx *img, t_point p0, t_point p1)
-{
-	if (abs(p1.y - p0.y) < abs(p1.x - p0.x))
-	{
-		if (p0.x > p1.x)
-			ft_plotXLine(img, p1, p0);
-		else
-			ft_plotXLine(img, p0, p1);
-	}
-	else
-	{
-		if (p0.y > p1.y)
-			ft_plotYLine(img, p1, p0);
-		else
-			ft_plotYLine(img, p0, p1);
-	}
-}
-
-void	ft_draw_grid(t_mlx *img, t_point ***grid, int rows, int cols)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < rows)
-	{
-		j = 0;
-		while (j < cols)
-		{
-			if (i < rows - 1)
-				ft_draw_2d_line(img, *grid[i][j], *grid[i + 1][j]);
-			if (j < cols - 1)
-				ft_draw_2d_line(img, *grid[i][j], *grid[i][j + 1]);
-			//printf("drawing (%d, %d)--(%d, %d)\n", grid[i][j]->x, grid[i][j]->y, grid[i][j + 1]->x, grid[i][j + 1]->y);
-			j++;
-		}
-		i++;
 	}
 }

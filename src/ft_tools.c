@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_tools.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mehill <mehill@student.21-school.ru>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/13 20:00:37 by mehill            #+#    #+#             */
+/*   Updated: 2021/10/13 20:00:37 by mehill           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../fdf.h"
 
 void	ft_exit(char *msg, int err)
@@ -8,7 +20,7 @@ void	ft_exit(char *msg, int err)
 
 void	ft_free_map(t_map *map)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < map->rows)
@@ -20,7 +32,7 @@ void	ft_free_map(t_map *map)
 	free(map->colors);
 }
 
-int		ft_max(int a, int b)
+int	ft_max(int a, int b)
 {
 	if (a > b)
 		return (a);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fdf.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mehill <mehill@student.21-school.ru>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/13 20:00:50 by mehill            #+#    #+#             */
+/*   Updated: 2021/10/13 20:02:35 by mehill           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FDF_H
 # define FDF_H
 
@@ -65,7 +77,6 @@ typedef struct s_param
 	int			originY;
 }				t_param;
 
-
 void	ft_exit(char *msg, int err);
 void	ft_printmap(t_map *map);
 void	ft_readmap(t_map *map, char *file);
@@ -93,5 +104,7 @@ int		ft_set_predef_transform(int key, t_transform *tsf, t_map *map);
 void	ft_init_window(t_mlx *mlx, t_transform *tsf, char *title);
 void	ft_init_data(t_map *map, t_transform *tsf);
 int		ft_close(int keycode, t_param *param);
+void	ft_plotXLine(t_mlx *img, t_point p0, t_point p1);
+void	ft_plotYLine(t_mlx *img, t_point p0, t_point p1);
 
 #endif

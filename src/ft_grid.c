@@ -1,15 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_grid.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mehill <mehill@student.21-school.ru>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/13 20:00:23 by mehill            #+#    #+#             */
+/*   Updated: 2021/10/13 20:32:08 by mehill           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../fdf.h"
 
-t_point	***ft_pointsmap(t_map *map)
+static void	ft_helper1(t_map *map, t_point ***out)
 {
-	t_point	***out;
 	t_point	*p;
 	int		i;
 	int		j;
 
-	out = malloc ((map->rows + 1) * sizeof(t_point *));
-	if (out == NULL)
-		ft_exit("Error : Unable to allocate memory for points map !\n", 1);
 	i = 0;
 	while (i < map->rows)
 	{
@@ -31,10 +39,20 @@ t_point	***ft_pointsmap(t_map *map)
 		}
 		i++;
 	}
+}
+
+t_point	***ft_pointsmap(t_map *map)
+{
+	t_point	***out;
+
+	out = malloc ((map->rows + 1) * sizeof(t_point *));
+	if (out == NULL)
+		ft_exit("Error : Unable to allocate memory for points map !\n", 1);
+	ft_helper1(map, out);
 	return (out);
 }
 
-void	ft_translate(t_map * map, t_transform *tsf, t_point ****pos)
+void	ft_translate(t_map *map, t_transform *tsf, t_point ****pos)
 {
 	t_point	*p;
 	int		i;
@@ -49,8 +67,8 @@ void	ft_translate(t_map * map, t_transform *tsf, t_point ****pos)
 		while (j < map->cols)
 		{
 			p = pos[0][i][j];
-			p->x += tsf->trsltX * -1;
-			p->y += tsf->trsltY * -1;
+			p->x += tsf->trsltX * -1 + 1;
+			p->y += tsf->trsltY * -1 + 1;
 			if (tsf->height < p->x)
 				tsf->height = p->x;
 			if (tsf->width < p->y)
@@ -59,6 +77,15 @@ void	ft_translate(t_map * map, t_transform *tsf, t_point ****pos)
 		}
 		i++;
 	}
+}
+
+static void	ft_helper2(t_transform *tsf, t_point *p)
+{
+	ft_rotate_3d(p, tsf);
+	if (tsf->trsltX > p->x)
+		tsf->trsltX = p->x;
+	if (tsf->trsltY > p->y)
+		tsf->trsltY = p->y;
 }
 
 void	ft_transform(t_map *map, t_transform *tsf, t_point ****pos)
@@ -79,11 +106,7 @@ void	ft_transform(t_map *map, t_transform *tsf, t_point ****pos)
 			p->x = i * tsf->scaleX;
 			p->y = j * tsf->scaleY;
 			p->z = map->alts[i][j] * tsf->scaleZ;
-			ft_rotate_3d(p, tsf);
-			if (tsf->trsltX > p->x)
-				tsf->trsltX = p->x;
-			if (tsf->trsltY > p->y)
-				tsf->trsltY = p->y;
+			ft_helper2(tsf, p);
 			j++;
 		}
 		i++;

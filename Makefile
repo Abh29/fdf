@@ -1,8 +1,8 @@
 #first parts 
 SRC :=	main.c  gnl/get_next_line.c gnl/get_next_line_utils.c \
-		src/ft_readmap.c src/ft_tools.c src/ft_print.c src/ft_draw.c \
+		src/ft_readmap.c src/ft_tools.c src/ft_draw.c \
 		src/ft_grid.c src/ft_transform.c src/ft_tools_2.c src/ft_control.c \
-		src/ft_grid_2.c
+		src/ft_grid_2.c src/ft_draw_2.c
 
 #bonnus 
 BSRC :=	$(SRC)
@@ -10,7 +10,8 @@ BSRC :=	$(SRC)
 CC = gcc
 
 FLGS = -Wall -Werror -Wextra -Imlx  -g -lm
-FRMWK = -Lmlx_linux -lmlx_linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
+FRMWK_Linux = -Lmlx_linux -lmlx_linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
+FRMWK = -lmlx -framework OpenGL -framework AppKit
 VALGFLGS = --vgdb=full --leak-check=full -s -q
 FBSIZE =	-D BUFFER_SIZE=42
 TARGS = test_maps/42.fdf

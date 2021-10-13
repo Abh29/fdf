@@ -1,5 +1,16 @@
-#include "../fdf.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_grid_2.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mehill <mehill@student.21-school.ru>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/13 20:00:19 by mehill            #+#    #+#             */
+/*   Updated: 2021/10/13 20:00:20 by mehill           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "../fdf.h"
 
 void	ft_rotate_grid(t_map *map, t_transform *tsf, t_point ****pos)
 {
@@ -51,8 +62,8 @@ void	ft_scale_grid(t_map *map, t_transform *tsf, t_point ****pos)
 
 void	ft_free_grid(t_map *map, t_point ****points)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	while (i < map->rows)

@@ -1,8 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_tools_2.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mehill <mehill@student.21-school.ru>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/13 20:00:33 by mehill            #+#    #+#             */
+/*   Updated: 2021/10/13 20:00:34 by mehill           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../fdf.h"
 
-static int		ft_char_index(char *str, int c)
+static	int	ft_char_index(char *str, int c)
 {
-	int out = 0;
+	int	out;
+
+	out = 0;
 	while (*str)
 	{
 		if (*str == c)
@@ -13,10 +27,10 @@ static int		ft_char_index(char *str, int c)
 	return (-1);
 }
 
-int		ft_atoi_base(char *str, char *base)
+int	ft_atoi_base(char *str, char *base)
 {
-	int size;
-	int out;
+	int	size;
+	int	out;
 
 	if (str == NULL || base == NULL)
 		return (0);
